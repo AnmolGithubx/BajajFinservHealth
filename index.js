@@ -43,16 +43,13 @@ function gcd(a, b) {
   }
   return a;
 }
-
 function lcmTwo(a, b) {
   if (a === 0 || b === 0) return 0;
   return Math.abs(a * b) / gcd(a, b);
 }
-
 function arrayGcd(arr) {
   return arr.reduce((acc, v) => gcd(acc, v));
 }
-
 function arrayLcm(arr) {
   return arr.reduce((acc, v) => lcmTwo(acc, v));
 }
@@ -77,7 +74,8 @@ async function callAI(question) {
   const text =
     resp.data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
 
-  return text || "Unknown";
+  const singleWord = text.split(/\s+/)[0].replace(/[^A-Za-z]/g, "");
+  return singleWord || "Unknown";
 }
 
 app.get("/health", (req, res) => {
@@ -227,12 +225,13 @@ app.post("/bfhl", async (req, res) => {
         }
       }
 
-      const finalAnswer = (answer || "").trim() || "Unknown";
+      const singleWord =
+        answer.split(/\s+/)[0].replace(/[^A-Za-z]/g, "") || "Unknown";
 
       return res.status(200).json({
         is_success: true,
         official_email: OFFICIAL_EMAIL,
-        data: finalAnswer,
+        data: singleWord,
       });
     }
 
