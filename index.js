@@ -202,38 +202,35 @@ app.post("/bfhl", async (req, res) => {
     }
 
     if (key === "AI") {
-      const q = body.AI;
-      if (typeof q !== "string" || !q.trim()) {
-        return res.status(400).json({
-          is_success: false,
-          official_email: OFFICIAL_EMAIL,
-          error: "AI must be a non-empty string question",
-        });
-      }
-
-      let answer = "";
-      const lower = q.toLowerCase();
-
-      if (lower.includes("capital") && lower.includes("maharashtra")) {
-        answer = "Mumbai";
-      } else {
-        try {
-          answer = await callAI(q);
-        } catch (err) {
-          console.error("AI error:", err.message);
-          answer = "Unknown";
+        const q = body.AI;
+        if (typeof q !== "string" || !q.trim()) {
+          return res.status(400).json({
+            is_success: false,
+            official_email: OFFICIAL_EMAIL,
+            error: "AI must be a non-empty string question",
+          });
         }
-      }
-
-      const singleWord =
-        answer.split(/\s+/)[0].replace(/[^A-Za-z]/g, "") || "Unknown";
-
-      return res.status(200).json({
-        is_success: true,
-        official_email: OFFICIAL_EMAIL,
-        data: singleWord,
-      });
-    }
+  
+        let answer = "";
+        const lower = q.toLowerCase();
+  
+        if (lower.includes("capital") && lower.includes("maharashtra")) {
+          answer = "Mumbai";
+        } else {
+          try {
+            answer = await callAI(q);
+          } catch (err) {
+            console.error("AI error:", err.message);
+            answer = "Unknown";
+          }
+        }
+  
+        return res.status(200).json({
+          is_success: true,
+          official_email: OFFICIAL_EMAIL,
+          data: answer
+        });
+      }  
 
     return res.status(400).json({
       is_success: false,
